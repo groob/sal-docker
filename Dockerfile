@@ -12,11 +12,20 @@ CMD ["/sbin/my_init"]
 
 RUN apt-get update && apt-get install -y \
   python-pip \
-  python-dev
+  python-dev \
+  sqlite3 \
+  libsqlite3-dev
 
 RUN git clone https://github.com/grahamgilbert/sal.git /home/app/sal
 
 RUN pip install -r /home/app/sal/setup/requirements.txt
-
+RUN cd /home/app/sal/sal && \
+    cp example_settings.py settings.py && \
+    sed -i 's/#.*Your.*/\("Docker User", "docker@localhost"\)/' settings.py && \
+    sed -i 's/TIME_ZONE.*/TIME_ZONE = "America\/New_York"/' settings.py && \
+    cd .. && \
+    python manage.py syncdb --noinput && \
+    python manage.py migrate && \
+    python manage.py collectstatic --noinput
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
