@@ -29,7 +29,9 @@ RUN cd /home/app/sal/sal && \
     python manage.py collectstatic --noinput
 
 ADD passenger_wsgi.py /home/app/sal/
+RUN chown -R app:app /home/app/
 ADD sal.conf /etc/nginx/sites-enabled/sal.conf
+RUN rm -f /etc/nginx/sites-enabled/default.conf
 RUN rm -f /etc/service/nginx/down
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
