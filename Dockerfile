@@ -33,3 +33,5 @@ ADD sal.conf /etc/nginx/sites-enabled/sal.conf
 RUN rm -f /etc/service/nginx/down
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 8080
