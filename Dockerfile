@@ -27,5 +27,6 @@ RUN cd /home/app/sal/sal && \
     python manage.py syncdb --noinput && \
     python manage.py migrate && \
     python manage.py collectstatic --noinput
+ADD passenger_wsgi.py /home/app/sal/
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
