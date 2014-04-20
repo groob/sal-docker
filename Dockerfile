@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/grahamgilbert/sal.git /home/app/sal
 
 RUN pip install -r /home/app/sal/setup/requirements.txt
+ADD initial_data.json /home/app/sal/
 RUN cd /home/app/sal/sal && \
     cp example_settings.py settings.py && \
     sed -i 's/#.*Your.*/\("Docker User", "docker@localhost"\)/' settings.py && \
