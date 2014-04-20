@@ -13,28 +13,21 @@ CMD ["/sbin/my_init"]
 RUN apt-get update && apt-get install -y \
   python-pip \
   python-dev \
-  sqlite3 \
-  libsqlite3-dev
+  libpq-dev 
 
 RUN git clone https://github.com/grahamgilbert/sal.git /home/app/sal
 
 RUN pip install -r /home/app/sal/setup/requirements.txt
+RUN easy_install psycopg2
+RUN mkdir -p /etc/my_init.d
 ADD initial_data.json /home/app/sal/
-RUN cd /home/app/sal/sal && \
-    cp example_settings.py settings.py && \
-    sed -i 's/#.*Your.*/\("Docker User", "docker@localhost"\)/' settings.py && \
-    sed -i 's/TIME_ZONE.*/TIME_ZONE = "America\/New_York"/' settings.py && \
-    cd .. && \
-    python manage.py syncdb --noinput && \
-    python manage.py migrate && \
-    python manage.py collectstatic --noinput
-
+ADD settings.py /home/app/sal/sal/
 ADD passenger_wsgi.py /home/app/sal/
+ADD run.sh /etc/my_init.d/run.sh
 RUN chown -R app:app /home/app/
+
 ADD sal.conf /etc/nginx/sites-enabled/sal.conf
 RUN rm -f /etc/nginx/sites-enabled/default
 RUN rm -f /etc/service/nginx/down
-# Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 EXPOSE 8080
