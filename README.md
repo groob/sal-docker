@@ -22,3 +22,10 @@ In the folder with the Dockerfile, run
                  -e PASS="password" \
                  paintedfox/postgresql
 
+
+#To Do
+
+* Implement backup to S3
+* set admin user and password from environment variables.
+* Move sal.conf from container to a volume
+
